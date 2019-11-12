@@ -1,0 +1,28 @@
+// Set text color based on background
+@function set-text-color($color) {
+  @if(lightness($color) > 50) {
+    @return $dark;
+  } @else {
+    @return $light;
+  }
+}
+
+// Set background & text color
+@mixin set-background($color) {
+  background-color: $color;
+  color: set-text-color($color);
+}
+
+// Set background & text color
+@mixin set-gradient($color, $accent) {
+  background-image: linear-gradient(
+    $color, 
+    $accent
+  );
+  color: set-text-color($color);
+}
+
+// Retrieve a palette color value
+@function palette($color) {
+  @return value($palette, $color);
+}

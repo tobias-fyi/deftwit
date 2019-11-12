@@ -3,8 +3,8 @@ media/
 db_data/
 dox/
 
-# === Leaving .env in VC === #
-# .env
+# === Leaving production .env in VC === #
+# prod.env
 
 # Using dev.env for any secret envirovars
 dev.env
