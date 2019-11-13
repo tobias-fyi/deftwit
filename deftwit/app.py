@@ -6,7 +6,9 @@ A simple Flask application for analyzing and predicting tweets.
 
 from decouple import config
 from flask import Flask, render_template
+
 from deftwit.models import DB, User, Tweet
+from deftwit.twitter import TWITTER, add_tweets_to_db, tweet_list
 
 
 def create_app():
@@ -45,21 +47,35 @@ def create_app():
 
         return render_template("home.html", title="Home", users=users)
 
-    @app.route("/about")
-    def about():
+    @app.route("/user/<handle>")
+    def user(handle):
         """
-        About page route.
+        Returns a list of a user's tweets.
+        
+        Parameters
+        ----------
+        handle : string
+            The Twitter handle of the user, passed in via the URL route.
         
         Returns
         -------
         html/jinja2 template
-            Returns 'about.html', inheriting from 'about.html'.
+            Returns 'user.html', inheriting from 'base.html'.
         """
 
-        # Set the tweets variable using query object
-        tweets = Tweet.query.all()
+        # # Get the user object
+        # twitter_user = TWITTER.get_user(handle)
 
-        return render_template("about.html", title="About", tweets=tweets)
+        # # Filter the user object for the tweets
+        # tweets = twitter_user.timeline(
+        #     count=200, exclude_replies=True, include_rts=False, mode="extended",
+        # )
+
+        tweets = tweet_list(handle)
+
+        return render_template(
+            "user.html", title=f"def twit({handle})", handle=handle, tweets=tweets
+        )
 
     # Route to reset the database
     @app.route("/reset")
@@ -70,13 +86,29 @@ def create_app():
         Returns
         -------
         html/jinja2 template
-            Returns 'about.html', inheriting from 'about.html'.
+            Returns 'home.html', inheriting from 'base.html'.
         """
 
         # Reset the database
         DB.drop_all()
         DB.create_all()
 
-        return render_template("reset.html", title="Reset")
+        return render_template("home.html", title="Home (Reset)")
+
+    @app.route("/about")
+    def about():
+        """
+        About page route.
+        
+        Returns
+        -------
+        html/jinja2 template
+            Returns 'about.html', inheriting from 'base.html'.
+        """
+
+        # Set the tweets variable using query object
+        tweets = Tweet.query.all()
+
+        return render_template("about.html", title="About", tweets=tweets)
 
     return app

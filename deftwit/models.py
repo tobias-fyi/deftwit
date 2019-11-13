@@ -12,9 +12,9 @@ class User(DB.Model):
     """Twitter users to be analyzed."""
 
     id = DB.Column(DB.BigInteger, primary_key=True)
-    name = DB.Column(DB.String(32), nullable=False)
+    handle = DB.Column(DB.String(32), nullable=False)
     intro = DB.Column(DB.String(240), nullable=True)
-    newest_tweet_is = DB.Column(DB.BigInteger)
+    newest_tweet_id = DB.Column(DB.BigInteger)
 
     def __repr__(self):
         return f"<User @{self.name}>"

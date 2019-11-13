@@ -1,0 +1,17 @@
+// Main Section
+
+.main {
+  position: relative;
+
+  &-inner {
+    color: $light;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+  }
+}

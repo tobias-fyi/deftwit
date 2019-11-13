@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="banner">
+  <div class="overlay-dark">
+    <div class="banner-inner">
+      <div class="handle">
+        <h1 class="x-large">def twit({{ handle }})</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="main">
+  <div class="main-inner">
+    <ul>
+      {% for tweet in tweets %}
+      <div class="tweet">
+        <li>{{ tweet.full_text }}</li>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock content %}
