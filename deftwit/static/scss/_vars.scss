@@ -1,25 +1,28 @@
 // Measures
 
 $navheight: 4rem;
+$max-width: 1100px;
 
 // Colors
 
-$primary:				#095C87;
+$primary:			  	#095C87;
 $secondary:				#0D4D6E;
 
-$accent2:				#BA202E;
-$accent1:				#6E0810;
+$danger:			  	#6E0810;
+$success:         #039476;
 
 $dark:    				#121212;
-$light:			      	#F2F1ED;
+$light:			     	#F2F1ED;
 
-$shade1:				#ABABAB;
-$shade2:				#646464;
-$shade3:				#272425;
+$accent:		  		#BA202E;
+
+$shade1:		  		#ABABAB;
+$shade2:		  		#646464;
+$shade3:		  		#272425;
 
 $overshade:				rgba(39, 36, 37, 0.7);
 
-$border:				rgba(160,160,160,0.3);
+$border:			  	rgba(160,160,160,0.3);
 $border-bg:				rgba(160,160,160,0.075);
 $border-alt:			rgba(160,160,160,0.65);
 

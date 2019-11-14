@@ -1,0 +1,29 @@
+// Forms
+
+.form {
+  &-group {
+    margin: 1.2rem;
+  }
+
+  &-text {
+    display: block;
+    margin-top: 0.3rem;
+    color: $shade2;
+  }
+
+  input[type='text'],
+  select,
+  textarea {
+    display: block;
+    width: 80%;
+    padding: 0.4rem;
+    font-size: 1.2rem;
+    border: 1px solid $shade2;
+    // border-radius: 0.4rem;
+  }
+  
+  input[type='submit'] {
+    font: inherit;
+  }
+
+}

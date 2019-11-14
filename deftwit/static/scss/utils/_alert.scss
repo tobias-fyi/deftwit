@@ -1,0 +1,36 @@
+// Alerts
+.alert {
+  padding: 0.8rem;
+  margin: 1rem;
+  opacity: 0.9;
+  background: $light;
+  color: #333;
+
+  &.alert-primary {
+    @include set-background($primary);
+  }
+  
+  &.alert-dark {
+    @include set-background($dark);
+  }
+  
+  &.alert-success {
+    @include set-background($success);
+  }
+  
+  &.alert-danger {
+    @include set-background($danger);
+  }
+  
+  &.alert-shade1 {
+    @include set-background($shade1);
+  }
+  
+  &.alert-shade2 {
+    @include set-background($shade2);
+  }
+  
+  &.alert-shade3 {
+    @include set-background($shade3);
+  }
+}

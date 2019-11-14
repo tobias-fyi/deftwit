@@ -8,7 +8,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length
 
-from deftwit.models import User, Tweet
+from deftwit.models import DB, User, Tweet
 
 
 class GetUserForm(FlaskForm):
@@ -27,7 +27,7 @@ class GetUserForm(FlaskForm):
     submit = SubmitField("Add User")
 
 
-class CompareForm(FlaskForm):
+class PredictForm(FlaskForm):
     """
     A general class for selecting two Twitter users and comparing them
     based on a text input field.
@@ -38,14 +38,19 @@ class CompareForm(FlaskForm):
 
     # Get list of choices (users) from database
     users = User.query.all()
+
     # Create the selection fields - choice tuples defined using list comprehension
-    user_1 = SelectField("Twit #1", choices=[(user.id, user.handle) for user in users],)
-    user_2 = SelectField("Twit #2", choices=[(user.id, user.handle) for user in users],)
+    user_1 = SelectField(
+        "Twit #1", choices=[(user.handle, user.handle) for user in users],
+    )
+    user_2 = SelectField(
+        "Twit #2", choices=[(user.handle, user.handle) for user in users],
+    )
 
     # TODO: create function that generates a random tweet
     tweet_text = StringField(
         "Tweet text", validators=[DataRequired(), Length(min=1, max=240)]
     )
 
-    submit = SubmitField("Tweet text")
+    submit = SubmitField("Predict")
 

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container">
+
+  <div class="content">
+    <p>The database has been reset.</p>
+
+    <div class="buttons my-4">
+      <a href="{{ url_for('home') }}" class="btn btn-primary">
+        Return Home
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

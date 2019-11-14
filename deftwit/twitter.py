@@ -64,16 +64,31 @@ class DeftTwit:
             Returns a list of the user's tweets.
         """
 
-        # If list exists in db, pull from db
         # Otherwise, filter the user object for the tweets
-        tweets = User.query.filter_by(
-            User.handle == self.handle
-        ).first().tweets or self.twitter_user.timeline(
+        tweets = self.twitter_user.timeline(
             count=count,
             exclude_replies=(replies == False),
             include_rts=retweets,
             tweet_mode=mode,
         )
+
+        return tweets
+
+    def tweet_list_from_db(self):
+        """
+        Get a list of a user's tweets.
+
+        Returns
+        -------
+        tweets : list
+            Returns a list of the user's tweets.
+        """
+
+        try:
+            if len(User.query.filter(User.handle == self.handle).first().tweets) > 0:
+                tweets = User.query.filter(User.handle == self.handle).first().tweets
+        except Exception as e:
+            raise e
 
         return tweets
 
@@ -83,13 +98,13 @@ class DeftTwit:
 
         Returns
         -------
-        message : string
-            Returns a message containing the status of the database update.
+        tweets : list
+            Returns a list of the user's tweets.
         """
 
         try:
             # Get the tweets object from the API
-            tweets = self.tweet_list(self.handle)
+            tweets = self.tweet_list(self.handle, True)
 
             # Get the user from the db
             # If not added yet, define as instance of User
@@ -120,6 +135,8 @@ class DeftTwit:
             raise e
         else:
             DB.session.commit()  # Commit the database session to the database
+
+        return tweets
 
     def __str__(self):
         """Define the string conversion of the class instance."""

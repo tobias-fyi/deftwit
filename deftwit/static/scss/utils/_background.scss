@@ -1,0 +1,43 @@
+// Backgrounds
+.bg {
+  &-primary {
+    @include set-background($primary);
+  }
+
+  &-secondary {
+    @include set-background($secondary);
+  }
+
+  &-gradient1 {
+    @include set-gradient($primary, $secondary);
+  }
+
+  &-gradient2 {
+    @include set-gradient($secondary, $primary);
+  }
+
+  &-dark {
+    @include set-background($dark);
+  }
+
+  &-light {
+    @include set-background($light);
+    border: $border 1px solid;
+  }
+  
+  &-accent {
+    @include set-background($accent);
+  }
+  
+  &-shade1 {
+    @include set-background($shade1);
+  }
+
+  &-shade2 {
+    @include set-background($shade2);
+  }
+
+  &-shade3 {
+    @include set-background($shade3);
+  }
+}

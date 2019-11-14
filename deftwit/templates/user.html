@@ -1,25 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="banner">
-  <div class="overlay-dark">
-    <div class="banner-inner">
-      <div class="handle">
-        <h1 class="x-large">def twit({{ handle }})</h1>
-      </div>
+<section class="container">
+
+  <div class="content">
+    <h2>Users currently in database</h2>
+    <div class="users my-1">
+      {% for user in users %}
+      <div class="user">{{ user.handle }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="content">
+    <form class="form" action="" method="post">
+      {{ form.hidden_tag() }}
+      <fieldset class="form">
+        <legend>Get tweets for another user</legend>
+        <div class="form-group">
+          {{ form.handle.label }}
+          {{ form.handle }}
+        </div>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <div class="tweets my-2">
+    <h2>{{ title }}'s Tweets</h2>
+    <div class="my-1">
+      <ul>
+        {% for tweet in tweets %}
+        <div class="tweet">
+          <li>{{ tweet.body }}</li>
+        </div>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 </section>
 
-<section class="main">
-  <div class="main-inner">
-    <ul>
-      {% for tweet in tweets %}
-      <div class="tweet">
-        <li>{{ tweet.full_text }}</li>
-      </div>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
 {% endblock content %}

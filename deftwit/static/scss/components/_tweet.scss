@@ -1,0 +1,12 @@
+// Tweets
+
+.tweets {
+  display: block;
+
+  .tweet {
+    border: 1px solid $shade2;
+    margin: 0.2rem 0;
+    padding: 0.4rem;
+    background-color: $border;
+  }
+}

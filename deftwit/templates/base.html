@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
   {% if title %}
-  <title>def twit({{ title }})</title>
+    <title>def twit(@{{ title }})</title>
   {% else %}
-  <title>def twit()</title>
+    <title>def twit()</title>
   {% endif %}
 
 
@@ -25,19 +25,45 @@
     <div>
       <h1 id="logo">
         <a href="{{ url_for('home') }}">
-          <code>def twit()</code>
+          {% if title %}
+            <code>def twit(@{{ title }})</code>
+          {% else %}
+            <code>def twit()</code>
+          {% endif %}
         </a>
       </h1>
     </div>
 
     <ul>
       <li><a href="{{ url_for('home') }}">Home</a></li>
-      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('predict') }}">Predict</a></li>
     </ul>
   </nav>
 
+  <section class="banner">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </section>
+
   {% block content %}
   {% endblock content %}
+
+  <footer class="footer bg-dark">
+    <ul>
+      <li>
+        <a class="btn btn-danger" href="{{ url_for('reset') }}">
+          Reset DB
+        </a>
+      </li>
+    </ul>
+  </footer>
 
 </body>
 

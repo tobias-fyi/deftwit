@@ -1,0 +1,31 @@
+// Footer
+
+.footer {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  padding: 0.7rem 2rem;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: $navheight;
+  left: 0;
+  bottom: 0;
+  border-top: solid 1px $danger;
+  opacity: 0.9;
+
+  ul {
+    display: flex;
+  }
+
+  a {
+    color: $light;
+    padding: 0.45rem;
+    margin: 0 0.25rem;
+
+    &:hover {
+      color: $danger;
+    }
+  }
+}

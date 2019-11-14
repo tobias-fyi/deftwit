@@ -1,13 +1,26 @@
 // Imports
 @import 'vars';
 @import 'mixins';
-@import 'utils';
+
+
+// Utilities
+@import 'utils/margin';
+@import 'utils/text';
+@import 'utils/background';
+@import 'utils/overlay';
+@import 'utils/alert';
 
 
 // Core Styles
 @import 'base';
 
+
 // Components
 @import 'components/navbar';
+@import 'components/footer';
 @import 'components/banner';
-@import 'components/main';
+@import 'components/container';
+@import 'components/form';
+@import 'components/button';
+@import 'components/tweet';
+@import 'components/user';

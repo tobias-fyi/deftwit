@@ -2,25 +2,23 @@
 
 {% block content %}
 <section class="container">
-
   <div class="content">
-    <h2>Users currently in database</h2>
-    <div class="users my-1">
-      {% for user in users %}
-      <div class="user">{{ user.handle }}</div>
-      {% endfor %}
-    </div>
-  </div>
-
-  <div class="content my-4">
     <form class="form" action="" method="post">
       <!-- Creates the csrf token -->
       {{ form.hidden_tag() }}
       <fieldset class="form">
-        <legend>Get tweets for a user</legend>
+        <legend>Compare users</legend>
         <div class="form-group">
-          {{ form.handle.label }}
-          {{ form.handle }}
+          {{ form.user_1.label }}
+          {{ form.user_1 }}
+        </div>
+        <div class="form-group">
+          {{ form.user_2.label }}
+          {{ form.user_2 }}
+        </div>
+        <div class="form-group">
+          {{ form.tweet_text.label }}
+          {{ form.tweet_text }}
         </div>
         <div class="form-group">
           {{ form.submit(class="btn btn-primary") }}
@@ -28,8 +26,6 @@
       </fieldset>
     </form>
   </div>
-
 </section>
-
 
 {% endblock content %}
