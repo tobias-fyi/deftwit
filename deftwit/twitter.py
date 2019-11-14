@@ -87,6 +87,8 @@ class DeftTwit:
         try:
             if len(User.query.filter(User.handle == self.handle).first().tweets) > 0:
                 tweets = User.query.filter(User.handle == self.handle).first().tweets
+            else:
+                tweets = self.tweet_list()
         except Exception as e:
             raise e
 
@@ -102,10 +104,9 @@ class DeftTwit:
             Returns a list of the user's tweets.
         """
 
-        try:
-            # Get the tweets object from the API
-            tweets = self.tweet_list(self.handle, True)
+        tweets = []
 
+        try:
             # Get the user from the db
             # If not added yet, define as instance of User
             db_user = User.query.get(self.twitter_user.id) or User(
@@ -114,29 +115,49 @@ class DeftTwit:
                 intro=self.twitter_user.description,
             )
 
-            DB.session.add(db_user)  # Add the User to the database session
+            try:
+                if User.query.filter(User.handle == self.handle).first():
+                    tweets = (
+                        User.query.filter(User.handle == self.handle).first().tweets
+                    )
+                    message = f"User @{self.handle} retrieved from database."
+                    message_class = "primary"
+                else:
+                    # Get the tweets object from the API
+                    tweets = self.tweet_list()
 
-            if tweets:  # Confirm that the user has a first tweet to use
-                db_user.newest_tweet_id = tweets[0].id
+                    DB.session.add(db_user)  # Add the User to the database session
 
-            for tweet in tweets:
-                # Send tweet to Basilica to request embedding
-                embedding = BASILICA.embed_sentence(tweet.full_text, model="twitter")
-                # Create instance of Tweet data model
-                db_tweet = Tweet(
-                    id=tweet.id, body=tweet.full_text[:500], embedding=embedding
-                )
-                # Append this tweet to the list of this user's tweets
-                db_user.tweets.append(db_tweet)
-                DB.session.add(db_tweet)  # Add instance to database session
+                    if tweets:  # Confirm that the user has a first tweet to use
+                        db_user.newest_tweet_id = tweets[0].id
+
+                    for tweet in tweets:
+                        # Send tweet to Basilica to request embedding
+                        embedding = BASILICA.embed_sentence(
+                            tweet.full_text, model="twitter"
+                        )
+                        # Create instance of Tweet data model
+                        db_tweet = Tweet(
+                            id=tweet.id, body=tweet.full_text[:500], embedding=embedding
+                        )
+                        # Append this tweet to the list of this user's tweets
+                        db_user.tweets.append(db_tweet)
+                        DB.session.add(db_tweet)  # Add instance to database session
+
+                    message = f"User @{self.handle} added to database"
+                    message_class = "success"
+
+            except Exception as e:
+                print(f"Error processing {self.twitter_user}: {e}")
+                raise e
+            else:
+                DB.session.commit()  # Commit the database session to the database
 
         except Exception as e:
             print(f"Error processing {self.twitter_user}: {e}")
             raise e
         else:
-            DB.session.commit()  # Commit the database session to the database
-
-        return tweets
+            return tweets, message, message_class
 
     def __str__(self):
         """Define the string conversion of the class instance."""

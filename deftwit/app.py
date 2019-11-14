@@ -43,14 +43,17 @@ def create_app():
 
         form = GetUserForm()  # Instantiate the GetUserForm
 
-        if form.validate_on_submit():
-            # Instantiate the twitter handle as a DeftTwit object
-            dftw = DeftTwit(form.handle.data)
-            # Get the DeftTwit's tweets and update db via class method
-            tweets = dftw.update_db()
-            # Create success message
-            flash(f"User @{form.handle.data} added to database", "success")
-            return redirect(url_for("user", handle=form.handle.data))
+        try:
+            if form.validate_on_submit():
+                # Instantiate the twitter handle as a DeftTwit object
+                dftw = DeftTwit(form.handle.data)
+                # Get tweets either from database or from API
+                tweets, message, message_class = dftw.update_db()
+                # Create message
+                flash(message, message_class)
+                return redirect(url_for("user", handle=form.handle.data))
+        except Exception as e:
+            raise e
 
         return render_template("home.html", title="Home", users=users, form=form)
 
@@ -75,18 +78,18 @@ def create_app():
         tweets = []
 
         try:
-            if request.method == "POST":
-                if form.validate_on_submit():
-                    # Instantiate the twitter handle as a DeftTwit object
-                    dftw = DeftTwit(form.handle.data)
-                    # Get the DeftTwit's tweets and update db via class method
-                    tweets = dftw.update_db()
-                    # Create success message
-                    flash(f"User @{form.handle.data} added to database", "success")
-                    return redirect(url_for("user", handle=form.handle.data))
+            # if request.method == "POST":
+            if form.validate_on_submit():
+                # Instantiate the twitter handle as a DeftTwit object
+                dftw = DeftTwit(form.handle.data)
+                # Get tweets either from database or from API
+                tweets, message, message_class = dftw.update_db()
+                # Create message
+                flash(message, message_class)
+                return redirect(url_for("user", handle=form.handle.data))
             else:
                 dftw = DeftTwit(handle)
-                tweets = dftw.tweet_list_from_db()
+                tweets, message, message_class = dftw.update_db()
 
         except Exception as e:
             raise e

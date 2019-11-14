@@ -217,6 +217,10 @@
   color: #F2F1ED;
 }
 
+.spacer {
+  height: 4rem;
+}
+
 * {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -228,9 +232,8 @@ body {
   font-family: 'Lato', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  background: url(../images/headertall.jpg) repeat-y center center/auto;
+  background-color: #272425;
   color: #F2F1ED;
-  overflow: hidden;
 }
 
 a {
@@ -295,11 +298,11 @@ img {
       -ms-flex-pack: center;
           justify-content: center;
   padding: 0.7rem 2rem;
-  position: fixed;
   z-index: 1;
   width: 100%;
   height: 4rem;
   left: 0;
+  right: 0;
   bottom: 0;
   border-top: solid 1px #6E0810;
   opacity: 0.9;
@@ -319,6 +322,14 @@ img {
 
 .footer a:hover {
   color: #6E0810;
+}
+
+.footer.footer-fixed {
+  position: fixed;
+}
+
+.footer.footer-static {
+  position: static;
 }
 
 .banner {

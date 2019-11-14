@@ -31,5 +31,17 @@
 
 </section>
 
-
+<!-- <div class="spacer"></div> -->
 {% endblock content %}
+
+{% block footer %}
+<footer class="footer footer-fixed bg-dark">
+  <ul>
+    <li>
+      <a class="btn btn-danger" href="{{ url_for('reset') }}">
+        Reset DB
+      </a>
+    </li>
+  </ul>
+</footer>
+{% endblock footer %}

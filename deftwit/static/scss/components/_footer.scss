@@ -6,11 +6,11 @@
   align-content: center;
   justify-content: center;
   padding: 0.7rem 2rem;
-  position: fixed;
   z-index: 1;
   width: 100%;
   height: $navheight;
   left: 0;
+  right: 0;
   bottom: 0;
   border-top: solid 1px $danger;
   opacity: 0.9;
@@ -28,4 +28,13 @@
       color: $danger;
     }
   }
+
+  &.footer-fixed {
+    position: fixed;
+  }
+
+  &.footer-static {
+    position: static;
+  }
+
 }
