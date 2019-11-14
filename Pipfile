@@ -21,6 +21,7 @@ gunicorn = "*"
 python-dotenv = "*"
 python-decouple = "*"
 scikit-learn = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"

@@ -8,7 +8,8 @@ from decouple import config
 from flask import Flask, render_template
 
 from deftwit.models import DB, User, Tweet
-from deftwit.twitter import TWITTER, add_tweets_to_db, tweet_list
+from deftwit.twitter import TWITTER, DeftTwit
+from deftwit.forms import GetUserForm, CompareForm
 
 
 def create_app():
@@ -23,6 +24,9 @@ def create_app():
 
     # Define the application
     app = Flask(__name__)
+
+    # Set up the secret key
+    app.config["SECRET_KEY"] = config("FLASK_SECRET_KEY")
 
     # Configure the database
     app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URI")
@@ -42,20 +46,26 @@ def create_app():
             Returns 'home.html', inheriting from 'base.html'.
         """
 
-        # Set the tweets variable using query object
+        # TODO: add form to capture user input / parameters
+        form = GetUserForm()
+
+        # Display list of users already in the database
         users = User.query.all()
 
-        return render_template("home.html", title="Home", users=users)
+        return render_template("home.html", title="Home", users=users, form=form)
 
-    @app.route("/user/<handle>")
-    def user(handle):
+    @app.route("/user", methods=["POST"])  # Uses the form
+    @app.route("/user/<handle>", methods=["GET"])  # Uses the parameter
+    def user(handle=None, message=""):
         """
         Returns a list of a user's tweets.
         
         Parameters
         ----------
         handle : string
-            The Twitter handle of the user, passed in via the URL route.
+            The Twitter handle of the user; default is None.
+        message : string
+            The message to display on the page, default is empty string.
         
         Returns
         -------
@@ -63,18 +73,27 @@ def create_app():
             Returns 'user.html', inheriting from 'base.html'.
         """
 
-        # # Get the user object
-        # twitter_user = TWITTER.get_user(handle)
+        # TODO: include a button to save to database
 
-        # # Filter the user object for the tweets
-        # tweets = twitter_user.timeline(
-        #     count=200, exclude_replies=True, include_rts=False, mode="extended",
-        # )
-
-        tweets = tweet_list(handle)
+        try:
+            # When user uses the form
+            if request.method == "POST":
+                # Instantiate the twitter handle as a DeftTwit object
+                dftw = DeftTwit(handle)
+                # Get the DeftTwit's tweets via class method
+                tweets = dftw.tweet_list()
+                message = f"User @{handle} succussfully added."
+            tweets = 
+        except Exception as e:
+            raise e
+            tweets = []
 
         return render_template(
-            "user.html", title=f"def twit({handle})", handle=handle, tweets=tweets
+            "user.html", 
+            title=f"{handle}", 
+            handle=handle, 
+            tweets=tweets, 
+            message=message
         )
 
     # Route to reset the database
@@ -106,9 +125,6 @@ def create_app():
             Returns 'about.html', inheriting from 'base.html'.
         """
 
-        # Set the tweets variable using query object
-        tweets = Tweet.query.all()
-
-        return render_template("about.html", title="About", tweets=tweets)
+        return render_template("about.html", title="About")
 
     return app

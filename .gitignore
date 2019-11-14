@@ -5,6 +5,7 @@ dox/
 
 # === Leaving production .env in VC === #
 # prod.env
+temp.env
 
 # Using dev.env for any secret envirovars
 dev.env
@@ -170,6 +171,7 @@ celerybeat-schedule
 # Environments
 .venv
 env/
+.env
 venv/
 ENV/
 env.bak/

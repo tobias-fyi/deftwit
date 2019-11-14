@@ -25,98 +25,106 @@ TWITTER = tweepy.API(TWITTER_AUTH)
 BASILICA = basilica.Connection(config("BASILICA_KEY"))
 
 
-def tweet_list(handle):
-    """
-    Get a list of a user's tweets.
-    
-    Parameters
-    ----------
-    handle : string
-        User's Twitter handle.
-    """
+class DeftTwit:
+    """A general class for manipulating users and their tweets."""
 
-    # Get the user object
-    twitter_user = TWITTER.get_user(handle)
+    def __init__(self, handle: str):
+        self.handle = handle
 
-    # Filter the user object for the tweets
-    tweets = twitter_user.timeline(
-        count=200, exclude_replies=True, include_rts=False, tweet_mode="extended",
-    )
+        try:
+            # Initialize instance with user object
+            self.twitter_user = TWITTER.get_user(self.handle)
+        except tweepy.TweepError as tweep_error:
+            raise tweep_error
 
-    return tweets
+    def tweet_list(
+        self,
+        count: int = 200,
+        replies: bool = False,
+        retweets: bool = False,
+        mode: str = "extended",
+    ):
+        """
+        Get a list of a user's tweets.
+        
+        Parameters
+        ----------
+        count : int, optional
+            Number of tweets to retrieve, by default 200
+        replies : bool, optional
+            Include the user's replies, by default False
+        retweets : bool, optional
+            Include the user's retweets, by default False
+        mode : str, optional
+            Include the full or short text, by default "extended"
 
+        Returns
+        -------
+        tweets : list
+            Returns a list of the user's tweets.
+        """
 
-# Define functions to use inside the routes
-def add_tweets_to_db(handle, count=200, replies=False, retweets=False, mode="extended"):
-    """
-    Adds to the database 200 tweets from a user's Twitter timeline.
-    
-    Parameters
-    ----------
-    handle : string
-        The user's Twitter handle, without the '@'.
-    count : int, optional
-        Number of tweets to retrieve, by default 200
-    replies : bool, optional
-        Include the user's replies, by default False
-    retweets : bool, optional
-        Include the user's retweets, by default False
-    mode : str, optional
-        Include the full or short text, by default "extended"
-    """
+        # If list exists in db, pull from db
+        # Otherwise, filter the user object for the tweets
+        tweets = User.query.filter_by(
+            User.handle == self.handle
+        ).first().tweets or self.twitter_user.timeline(
+            count=count,
+            exclude_replies=(replies == False),
+            include_rts=retweets,
+            tweet_mode=mode,
+        )
 
-    # Get the user object
-    twitter_user = TWITTER.get_user(handle)
+        return tweets
 
-    # Filter the user object for the tweets
-    tweets = twitter_user.timeline(
-        count=count,
-        exclude_replies=(replies == False),
-        include_rts=retweets,
-        mode=mode,
-    )
+    def update_db(self):
+        """
+        Adds to the database 200 tweets from a user's Twitter timeline.
 
-    # Define the user as instance of User
-    db_user = User(
-        id=twitter_user.id,
-        handle=twitter_user.screen_name,
-        newest_tweet_id=tweets[0].id,
-    )
+        Returns
+        -------
+        message : string
+            Returns a message containing the status of the database update.
+        """
 
-    for tweet in tweets:
-        # Send tweet to Basilica to request embedding
-        embedding = BASILICA.embed_sentence(tweet.full_text, model="twitter")
-        # Create instance of Tweet data model
-        db_tweet = Tweet(id=tweet.id, body=tweet.full_text[:500], embedding=embedding)
-        DB.session.add(db_tweet)  # Add instance to database session
-        # Append this tweet to the list of this user's tweets
-        db_user.tweets.append(db_tweet)
+        try:
+            # Get the tweets object from the API
+            tweets = self.tweet_list(self.handle)
 
-    DB.session.add(db_user)  # Add the user to the database session
+            # Get the user from the db
+            # If not added yet, define as instance of User
+            db_user = User.query.get(self.twitter_user.id) or User(
+                id=self.twitter_user.id,
+                handle=self.twitter_user.screen_name,
+                intro=self.twitter_user.description,
+            )
 
-    DB.session.commit()  # Commit the database session to the database
+            DB.session.add(db_user)  # Add the User to the database session
 
+            if tweets:  # Confirm that the user has a first tweet to use
+                db_user.newest_tweet_id = tweets[0].id
 
-def save_tweets(tweets):
-    """
-    Request Basilica embed and add that and the tweets to DB session.
-    
-    Parameters
-    ----------
-    tweets : list
-        List of user's tweets to commit to the database.
-    """
+            for tweet in tweets:
+                # Send tweet to Basilica to request embedding
+                embedding = BASILICA.embed_sentence(tweet.full_text, model="twitter")
+                # Create instance of Tweet data model
+                db_tweet = Tweet(
+                    id=tweet.id, body=tweet.full_text[:500], embedding=embedding
+                )
+                # Append this tweet to the list of this user's tweets
+                db_user.tweets.append(db_tweet)
+                DB.session.add(db_tweet)  # Add instance to database session
 
-    for tweet in tweets:
-        # Send tweet to Basilica to request embedding
-        embedding = BASILICA.embed_sentence(tweet.full_text, model="twitter")
-        # Create instance of Tweet data model
-        db_tweet = Tweet(id=tweet.id, body=tweet.full_text[:500], embedding=embedding)
-        DB.session.add(db_tweet)  # Add instance to database session
-        # Append this tweet to the list of this user's tweets
-        db_user.tweets.append(db_tweet)
+        except Exception as e:
+            print(f"Error processing {self.twitter_user}: {e}")
+            raise e
+        else:
+            DB.session.commit()  # Commit the database session to the database
 
-    DB.session.add(db_user)  # Add the user to the database session
+    def __str__(self):
+        """Define the string conversion of the class instance."""
+        return f"<@{self.handle}>"
 
-    DB.session.commit()  # Commit the database session to the database
-
+    def __repr__(self):
+        """Define the detailed string conversion of the class instance."""
+        return f"{self.__class__.__name__}('{self.handle}')"
