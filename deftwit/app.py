@@ -26,7 +26,7 @@ def create_app():
     app.config["SECRET_KEY"] = config("FLASK_SECRET_KEY")
 
     # Configure the database
-    app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URI")
+    app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Initialize DB-app connection
