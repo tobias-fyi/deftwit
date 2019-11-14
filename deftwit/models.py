@@ -25,7 +25,7 @@ class Tweet(DB.Model):
     """A general class for a user's tweets, gathered from Twitter."""
 
     id = DB.Column(DB.BigInteger, primary_key=True)
-    body = DB.Column(DB.Unicode(240))
+    body = DB.Column(DB.Unicode(500))
     user_id = DB.Column(DB.BigInteger, DB.ForeignKey("user.id"), nullable=False)
     user = DB.relationship("User", backref=DB.backref("tweets", lazy=True))
     # TODO: add a date_posted field
